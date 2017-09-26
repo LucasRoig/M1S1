@@ -44,10 +44,6 @@ public class CSP {
         return sol;
     }
 
-    /* La methode bactrack ci-dessous travaille directement sur l'attribut assignment. 
-		 * On peut aussi choisir de ne pas utiliser cet attribut et de créer plutot un objet Assignment local à searchSolution : 
-		 * dans ce cas il faut le passer en parametre de backtrack
-     */
     /**
      * Exécute l'algorithme de backtrack à la recherche d'une solution en
      * étendant l'assignation courante Utilise l'attribut assignment
@@ -55,9 +51,6 @@ public class CSP {
      * @return la prochaine solution ou null si pas de nouvelle solution
      */
     private Assignment backtrack() {
-        // A IMPLANTER
-        // AJOUTER UN PARAMETRE DE TYPE ASSIGNMENT SI ON NE TRAVAILLE PAS DIRECTEMENT SUR L'ATTRIBUT assignment
-        // quelque part : cptr++
         if(this.assignment.getVars().size() == this.network.getVarNumber()){
             //Toutes les variables ont une assignation
             return this.assignment;
@@ -68,9 +61,8 @@ public class CSP {
                 this.cptr ++;
                 if(this.consistant(var)){
                     return this.backtrack();
-                }else{
-                    this.assignment.remove(var);
                 }
+                this.assignment.remove(var);
             }
             return null;
         }
@@ -86,13 +78,11 @@ public class CSP {
      *
      */
     public ArrayList<Assignment> searchAllSolutions() {
-        cptr = 1;
-        solutions.clear(); // SI ON CHOISIT DE TRAVAILLER DIRECTEMENT SUR L'ATTRIBUT SOLUTIONS
-        // Implanter appel a backtrack
-        System.err.println("searchAllSolutions a finaliser : gerer l'appel a backtrackAll  !!");
-
+        this.cptr = 1;
+        this.solutions.clear();
+        this.backtrackAll();
         System.out.println(cptr + " noeuds ont été explorés");
-        return solutions;
+        return this.solutions;
     }
 
     /**
@@ -101,11 +91,22 @@ public class CSP {
      *
      */
     private void backtrackAll() {
-        
-
+        if(this.assignment.getVars().size() == this.network.getVarNumber()){
+            //Toutes les variables ont une assignation
+            this.solutions.add(this.assignment.clone());
+        }else{
+            String var = this.chooseVar();
+            for (Object value : this.tri(network.getDom(var))){
+                this.assignment.put(var, value);
+                this.cptr ++;
+                if(this.consistant(var)){
+                    this.backtrackAll();
+                }
+                this.assignment.remove(var);
+            }
+        }
     }
 
-    // IMPLANTER l'UNE DES DEUX METHODES CHOOSEVAR CI-DESSOUS (SELON QUE L'ASSIGNATION COURANTE EST PASSEE EN PARAMETRE OU PAS)
     /**
      * Retourne la prochaine variable à assigner étant donné assignment (qui
      * doit contenir la solution partielle courante)
@@ -134,7 +135,6 @@ public class CSP {
         return values; // donc en l'état n'est pas d'une grande utilité !
     }
 
-    // IMPLANTER l'UNE DES DEUX METHODES CONSISTANT CI-DESSOUS (SELON QUE L'ASSIGNATION COURANTE EST PASSEE EN PARAMETRE OU PAS)
     /**
      * Teste si l'assignation courante stokée dans l'attribut assignment est
      * consistante, c'est à dire qu'elle ne viole aucune contrainte.

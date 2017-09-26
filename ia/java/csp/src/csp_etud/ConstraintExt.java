@@ -79,11 +79,9 @@ public class ConstraintExt extends Constraint {
 
 
     /* (non-Javadoc)
-	 * A Implanter !
 	 * @see Constraint#violation(Assignment)
      */
     public boolean violation(Assignment a) {
-        // A IMPLANTER
         List<Object> varValues = new ArrayList<>();
         for(String varName : this.varList){
             if(a.containsKey(varName)){
@@ -94,10 +92,7 @@ public class ConstraintExt extends Constraint {
                 return false;
             }
         }
-        if(!this.tuples.contains(varValues)){
-            return true;
-        }
-        return false;
+        return !this.tuples.contains(varValues);
     }
 
     /* (non-Javadoc)

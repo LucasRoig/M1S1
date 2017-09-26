@@ -43,7 +43,7 @@ public class Application {
         }
         if(myNetwork != null){
             CSP csp = new CSP(myNetwork);
-            System.out.println(csp.searchSolution());
+            System.out.println("solutions : " + csp.searchAllSolutions().size());
         }
     }
     
